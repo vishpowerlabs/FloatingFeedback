@@ -122,7 +122,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
           }}
           modalProps={{
             isBlocking: false,
-            styles: { main: { maxWidth: 900, minWidth: 600 } }
+            styles: { main: { maxWidth: 1000, minWidth: 600 } }
           }}
         >
           <div className={styles.modernFeedbackForm}>
@@ -144,7 +144,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
             />
 
             <div style={{ marginBottom: 15 }}>
-              <label className="ms-Label">Category</label>
+              <label className="ms-Label">Category <span style={{ color: '#a4262c' }}>*</span></label>
               <div className={styles.categoryContainer}>
                 {availableCategories.map((cat) => (
                   <div
@@ -157,6 +157,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
                 ))}
                 {availableCategories.length === 0 && <span>No categories found in the 'Category' column.</span>}
               </div>
+              {selectedCategories.length === 0 && <div style={{ color: '#a4262c', fontSize: '12px', marginTop: '5px' }}>Please select at least one category.</div>}
             </div>
 
             <div className={styles.ratingContainer}>
@@ -179,7 +180,11 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
             )}
           </div>
           <DialogFooter>
-            <PrimaryButton onClick={this._submitFeedback} text="Submit" disabled={isSubmitting || !title || !description} />
+            <PrimaryButton
+              onClick={this._submitFeedback}
+              text="Submit"
+              disabled={isSubmitting || !title.trim() || !description.trim() || selectedCategories.length === 0}
+            />
             <DefaultButton onClick={this._closeModal} text="Cancel" disabled={isSubmitting} />
           </DialogFooter>
         </Dialog>
