@@ -89,10 +89,10 @@ If you have deployed a new version:
 ## 5. Visuals
 
 ### Feedback Button
-![Floating Feedback Button](/Users/vishnu/.gemini/antigravity/brain/3e296548-9719-4d26-898d-e85b902d320f/floating_feedback_button_1765901166562.png)
+![Floating Feedback Button](./images/feedback-button.png)
 
 ### Feedback Form
-![Floating Feedback Form](/Users/vishnu/.gemini/antigravity/brain/3e296548-9719-4d26-898d-e85b902d320f/floating_feedback_form_1765901213540.png)
+![Floating Feedback Form](./images/feedback-form.png)
 
 ## 6. Verification
 
