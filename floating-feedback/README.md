@@ -84,7 +84,17 @@ If you have deployed a new version:
 
 ---
 
-## 5. Verification
+---
+
+## 5. Visuals
+
+### Feedback Button
+![Floating Feedback Button](/Users/vishnu/.gemini/antigravity/brain/3e296548-9719-4d26-898d-e85b902d320f/floating_feedback_button_1765901166562.png)
+
+### Feedback Form
+![Floating Feedback Form](/Users/vishnu/.gemini/antigravity/brain/3e296548-9719-4d26-898d-e85b902d320f/floating_feedback_form_1765901213540.png)
+
+## 6. Verification
 
 1.  Navigate to the Home page of your site.
 2.  You should see the **Feedback** button (floating pill shape) at the bottom right.
