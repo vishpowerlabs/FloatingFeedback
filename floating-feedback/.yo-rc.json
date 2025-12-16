@@ -1,0 +1,23 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "whichFolder": "subdir",
+    "solutionName": "floating-feedback",
+    "environment": "spo",
+    "useGulp": false,
+    "componentType": "webpart",
+    "template": "react",
+    "componentName": "FloatingFeedback",
+    "componentDescription": "Floating Feedback Web Part",
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "20.12.2",
+    "sdksVersions": {},
+    "version": "1.22.0",
+    "libraryName": "floating-feedback",
+    "libraryId": "dad9fc17-669e-44cb-a2a2-08d5f6fc72de",
+    "packageManager": "npm",
+    "solutionShortDescription": "floating-feedback description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false
+  }
+}

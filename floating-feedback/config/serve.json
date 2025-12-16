@@ -1,0 +1,26 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/spfx-serve.schema.json",
+  "port": 4321,
+  "https": true,
+  "initialPage": "https://diamondsg.sharepoint.com/sites/apptest/_layouts/workbench.aspx",
+  "serveConfigurations": {
+    "default": {
+      "pageUrl": "https://diamondsg.sharepoint.com/sites/apptest/_layouts/workbench.aspx",
+      "customActions": {
+        "e5828453-6447-4cf0-906d-495914656041": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {}
+        }
+      }
+    },
+    "floatingFeedback": {
+      "pageUrl": "https://diamondsg.sharepoint.com/sites/apptest/_layouts/workbench.aspx",
+      "customActions": {
+        "e5828453-6447-4cf0-906d-495914656041": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {}
+        }
+      }
+    }
+  }
+}
