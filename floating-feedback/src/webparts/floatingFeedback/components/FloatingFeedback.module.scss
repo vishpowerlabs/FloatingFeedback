@@ -2,7 +2,7 @@
 
 .floatingFeedback {
   // Use a modern font stack
-  font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
+  font-family: 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
 
   .floatingBtn {
     position: fixed;
@@ -28,73 +28,104 @@
 }
 
 .modernFeedbackForm {
-  padding: 0 12px;
+  padding: 20px 24px;
 
   h3 {
     margin-top: 0;
-    margin-bottom: 16px;
-    font-weight: 600;
+    margin-bottom: 24px;
+    font-weight: 700;
+    font-size: 20px;
+    color: #323130;
   }
 
-  // Spacing between fields
+  // Spacing and Inputs
   :global {
 
     .ms-TextField,
-    .ms-Dropdown,
-    .ms-TagPicker {
-      margin-bottom: 15px;
+    .ms-Dropdown {
+      margin-bottom: 20px;
+    }
+
+    .ms-Label {
+      font-weight: 600;
+      color: #323130;
+      margin-bottom: 8px;
     }
   }
 
   .ratingContainer {
-    margin-bottom: 20px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
 
     label {
-      margin-right: 15px;
-      font-weight: 600;
+      margin-bottom: 8px;
     }
   }
 
   .categoryContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 24px;
   }
 
+  // "App Store" style chips
   .categoryButton {
-    background-color: #f3f2f1;
+    background-color: #ffffff;
     border: 1px solid #e1dfdd;
-    border-radius: 16px;
-    padding: 6px 12px;
+    border-radius: 20px; // Pill shape
+    padding: 8px 16px;
     font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    color: #323130;
     user-select: none;
 
     &:hover {
-      background-color: #edebe9;
-      border-color: #c8c6c4;
+      background-color: #f3f2f1;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: translateY(1px);
+      box-shadow: none;
     }
   }
 
   .categoryButtonSelected {
     background-color: "[theme:primaryButtonBackground, default: #0078d4]";
-    color: "[theme:primaryButtonText, default: #ffffff]";
+    color: #ffffff;
     border-color: transparent;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
 
     &:hover {
       background-color: "[theme:primaryButtonBackgroundHovered, default: #106ebe]";
-      // Keep text white on hover
       color: #ffffff;
+      box-shadow: 0 6px 14px rgba(0, 120, 212, 0.4);
     }
   }
 
   .messageBar {
-    margin-top: 15px;
+    margin-top: 20px;
     animation: fadeIn 0.3s ease-in;
+  }
+}
+
+.feedbackDialogModal {
+  :global(.ms-Dialog-main) {
+    min-width: 1200px !important;
+    width: 1200px !important;
+    max-width: 95vw !important;
   }
 }
 

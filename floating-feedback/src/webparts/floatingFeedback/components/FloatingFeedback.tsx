@@ -25,6 +25,7 @@ export interface IFloatingFeedbackState {
   isSubmitting: boolean;
   message: string;
   messageType: MessageBarType;
+  hasAttemptedSubmit: boolean;
 }
 
 export default class FloatingFeedback extends React.Component<IFloatingFeedbackProps, IFloatingFeedbackState> {
@@ -35,13 +36,14 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
       isModalOpen: false,
       title: '',
       description: '',
-      rating: 3,
+      rating: 0, // Default to 0 (empty)
       selectedCategories: [],
       availableCategories: [],
       allowMultipleValues: true, // Default to true, updated on fetch
       isSubmitting: false,
       message: '',
-      messageType: MessageBarType.info
+      messageType: MessageBarType.info,
+      hasAttemptedSubmit: false
     };
   }
 
@@ -73,7 +75,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
       .catch(err => console.error('Error fetching category choices', err));
   }
 
-  private _toggleCategory = (category: string): void => {
+  private readonly _toggleCategory = (category: string): void => {
     const { selectedCategories, allowMultipleValues } = this.state;
     const index = selectedCategories.indexOf(category);
     let newSelection: string[];
@@ -81,14 +83,12 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
     if (index > -1) {
       // Remove
       newSelection = selectedCategories.filter(c => c !== category);
-    } else {
+    } else if (allowMultipleValues) {
       // Add
-      if (allowMultipleValues) {
-        newSelection = [...selectedCategories, category];
-      } else {
-        // If single select, replace the selection
-        newSelection = [category];
-      }
+      newSelection = [...selectedCategories, category];
+    } else {
+      // If single select, replace the selection
+      newSelection = [category];
     }
 
     this.setState({ selectedCategories: newSelection });
@@ -96,7 +96,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
 
   public render(): React.ReactElement<IFloatingFeedbackProps> {
     const { position } = this.props;
-    const { isModalOpen, title, description, rating, selectedCategories, availableCategories, allowMultipleValues, isSubmitting, message, messageType } = this.state;
+    const { isModalOpen, title, description, rating, selectedCategories, availableCategories, allowMultipleValues, isSubmitting, message, messageType, hasAttemptedSubmit } = this.state;
 
 
     // Calculate style based on position
@@ -122,7 +122,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
           }}
           modalProps={{
             isBlocking: false,
-            styles: { main: { maxWidth: 1000, minWidth: 600 } }
+            className: styles.feedbackDialogModal
           }}
         >
           <div className={styles.modernFeedbackForm}>
@@ -132,6 +132,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
               onChange={(e, val) => this.setState({ title: val || '' })}
               disabled={isSubmitting}
               required
+              errorMessage={hasAttemptedSubmit && !title.trim() ? "Title is required." : undefined}
             />
             <TextField
               label="Description"
@@ -141,6 +142,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
               onChange={(e, val) => this.setState({ description: val || '' })}
               disabled={isSubmitting}
               required
+              errorMessage={hasAttemptedSubmit && !description.trim() ? "Description is required." : undefined}
             />
 
             <div style={{ marginBottom: 15 }}>
@@ -157,11 +159,11 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
                 ))}
                 {availableCategories.length === 0 && <span>No categories found in the 'Category' column.</span>}
               </div>
-              {selectedCategories.length === 0 && <div style={{ color: '#a4262c', fontSize: '12px', marginTop: '5px' }}>Please select at least one category.</div>}
+              {hasAttemptedSubmit && selectedCategories.length === 0 && <div style={{ color: '#a4262c', fontSize: '12px', marginTop: '5px' }}>Please select at least one category.</div>}
             </div>
 
             <div className={styles.ratingContainer}>
-              <label className="ms-Label">Rating</label>
+              <label className="ms-Label">Rating <span style={{ color: '#a4262c' }}>*</span></label>
               <Rating
                 min={1}
                 max={5}
@@ -169,6 +171,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
                 onChange={(e, val) => this.setState({ rating: val || 0 })}
                 disabled={isSubmitting}
               />
+              {hasAttemptedSubmit && rating === 0 && <div style={{ color: '#a4262c', fontSize: '12px', marginTop: '5px' }}>Please provide a rating.</div>}
             </div>
 
             {message && (
@@ -183,7 +186,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
             <PrimaryButton
               onClick={this._submitFeedback}
               text="Submit"
-              disabled={isSubmitting || !title.trim() || !description.trim() || selectedCategories.length === 0}
+              disabled={isSubmitting}
             />
             <DefaultButton onClick={this._closeModal} text="Cancel" disabled={isSubmitting} />
           </DialogFooter>
@@ -192,27 +195,34 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
     );
   }
 
-  private _openModal = (): void => {
+  private readonly _openModal = (): void => {
     this.setState({
       isModalOpen: true,
       message: '',
       messageType: MessageBarType.info,
       title: '',
       description: '',
-      rating: 3,
-      selectedCategories: []
+      rating: 0,
+      selectedCategories: [],
+      hasAttemptedSubmit: false
     });
   }
 
-  private _closeModal = (): void => {
+  private readonly _closeModal = (): void => {
     this.setState({ isModalOpen: false });
   }
 
-
-
-  private _submitFeedback = (): void => {
+  private readonly _submitFeedback = (): void => {
     const { listName, spHttpClient, siteUrl, userDisplayName } = this.props;
     const { title, description, rating, selectedCategories, allowMultipleValues } = this.state;
+
+    // Trigger validation visibility
+    this.setState({ hasAttemptedSubmit: true });
+
+    // Validate
+    if (!title.trim() || !description.trim() || selectedCategories.length === 0 || rating === 0) {
+      return;
+    }
 
     if (!listName) {
       this.setState({ message: 'Error: No list configured.', messageType: MessageBarType.error });
@@ -264,8 +274,9 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
             messageType: MessageBarType.success,
             title: '',
             description: '',
-            rating: 3,
-            selectedCategories: []
+            rating: 0,
+            selectedCategories: [],
+            hasAttemptedSubmit: false
           });
           setTimeout(() => this._closeModal(), 2000);
         } else {
@@ -278,7 +289,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
           });
         }
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         this.setState({
           isSubmitting: false,
           message: `Error: ${error.message}`,
