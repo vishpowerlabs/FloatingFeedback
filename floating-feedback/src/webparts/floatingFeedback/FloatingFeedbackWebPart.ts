@@ -44,6 +44,7 @@ export default class FloatingFeedbackWebPart extends BaseClientSideWebPart<IFloa
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
+        userEmail: this.context.pageContext.user.email,
         pageName: document.title,
         listName: 'Feedback',
         position: this.properties.position,
@@ -55,17 +56,16 @@ export default class FloatingFeedbackWebPart extends BaseClientSideWebPart<IFloa
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
-    return this._getEnvironmentMessage().then(message => {
-      this._environmentMessage = message;
-      return this._getLists().then(() => {
-        // If we already have a list selected, try to load fields
-        if (this.properties.listId) {
-          return this._getFields(this.properties.listId);
-        }
-        return Promise.resolve();
-      });
-    });
+  protected async onInit(): Promise<void> {
+    const message = await this._getEnvironmentMessage();
+    this._environmentMessage = message;
+
+    await this._getLists();
+
+    // If we already have a list selected, try to load fields
+    if (this.properties.listId) {
+      await this._getFields(this.properties.listId);
+    }
   }
 
   private _getLists(): Promise<void> {
@@ -104,7 +104,7 @@ export default class FloatingFeedbackWebPart extends BaseClientSideWebPart<IFloa
       });
   }
 
-  protected async onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any): Promise<void> { // eslint-disable-line @typescript-eslint/no-explicit-any
+  protected onPropertyPaneFieldChanged(propertyPath: string, oldValue: any, newValue: any): void { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (propertyPath === 'listId' && newValue) {
       this._fieldsDropdownDisabled = true;
       this._fields = [];
@@ -112,7 +112,12 @@ export default class FloatingFeedbackWebPart extends BaseClientSideWebPart<IFloa
       this.properties.descriptionColumn = '';
       this.properties.ratingColumn = '';
       this.properties.categoryColumn = '';
-      await this._getFields(newValue);
+
+      // Fire and forget - _getFields calls refresh() when done
+      this._getFields(newValue).catch((err) => {
+        console.error('Error loading fields', err);
+      });
+
       this.context.propertyPane.refresh();
     }
   }
@@ -120,7 +125,7 @@ export default class FloatingFeedbackWebPart extends BaseClientSideWebPart<IFloa
 
 
   private _getEnvironmentMessage(): Promise<string> {
-    if (!!this.context.sdks.microsoftTeams) { // running in Teams, office.com or Outlook
+    if (this.context.sdks.microsoftTeams) { // running in Teams, office.com or Outlook
       return this.context.sdks.microsoftTeams.teamsJs.app.getContext()
         .then(context => {
           let environmentMessage: string = '';

@@ -49,6 +49,7 @@ export default class FloatingFeedbackApplicationCustomizer
                     spHttpClient: this.context.spHttpClient,
                     siteUrl: this.context.pageContext.web.absoluteUrl,
                     userDisplayName: this.context.pageContext.user.displayName,
+                    userEmail: this.context.pageContext.user.email,
                     pageName: document.title, // Capture current page title
                     position: 'Bottom', // Default position
                     listName: 'Feedback', // Hardcoded list name

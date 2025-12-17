@@ -96,7 +96,7 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
 
   public render(): React.ReactElement<IFloatingFeedbackProps> {
     const { position } = this.props;
-    const { isModalOpen, title, description, rating, selectedCategories, availableCategories, allowMultipleValues, isSubmitting, message, messageType, hasAttemptedSubmit } = this.state;
+    const { isModalOpen, title, description, rating, selectedCategories, availableCategories, isSubmitting, message, messageType, hasAttemptedSubmit } = this.state;
 
 
     // Calculate style based on position
@@ -127,6 +127,13 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
         >
           <div className={styles.modernFeedbackForm}>
             <TextField
+              label="User"
+              value={this.props.userEmail}
+              readOnly
+              disabled
+              styles={{ fieldGroup: { background: '#f3f2f1' } }}
+            />
+            <TextField
               label="Title"
               value={title}
               onChange={(e, val) => this.setState({ title: val || '' })}
@@ -146,16 +153,19 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
             />
 
             <div style={{ marginBottom: 15 }}>
-              <label className="ms-Label">Category <span style={{ color: '#a4262c' }}>*</span></label>
+              <div className="ms-Label">Category <span style={{ color: '#a4262c' }}>*</span></div>
               <div className={styles.categoryContainer}>
                 {availableCategories.map((cat) => (
-                  <div
+                  <button
+                    type="button"
                     key={cat}
-                    className={`${styles.categoryButton} ${selectedCategories.indexOf(cat) > -1 ? styles.categoryButtonSelected : ''}`}
-                    onClick={() => !isSubmitting && this._toggleCategory(cat)}
+                    disabled={isSubmitting}
+                    aria-pressed={selectedCategories.includes(cat)}
+                    className={`${styles.categoryButton} ${selectedCategories.includes(cat) ? styles.categoryButtonSelected : ''}`}
+                    onClick={() => this._toggleCategory(cat)}
                   >
                     {cat}
-                  </div>
+                  </button>
                 ))}
                 {availableCategories.length === 0 && <span>No categories found in the 'Category' column.</span>}
               </div>
@@ -163,9 +173,9 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
             </div>
 
             <div className={styles.ratingContainer}>
-              <label className="ms-Label">Rating <span style={{ color: '#a4262c' }}>*</span></label>
+              <div className="ms-Label">Rating <span style={{ color: '#a4262c' }}>*</span></div>
               <Rating
-                min={1}
+
                 max={5}
                 rating={rating}
                 onChange={(e, val) => this.setState({ rating: val || 0 })}
@@ -173,6 +183,14 @@ export default class FloatingFeedback extends React.Component<IFloatingFeedbackP
               />
               {hasAttemptedSubmit && rating === 0 && <div style={{ color: '#a4262c', fontSize: '12px', marginTop: '5px' }}>Please provide a rating.</div>}
             </div>
+
+            <TextField
+              label="Page Name"
+              value={this.props.pageName}
+              readOnly
+              disabled
+              styles={{ fieldGroup: { background: '#f3f2f1' } }}
+            />
 
             {message && (
               <div className={styles.messageBar}>
